@@ -42,16 +42,19 @@ const login = async(req,res)=>{
             return res.status(404).send("User not found");
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = user.comparePassword(password)
 
         if(!isMatch){
             return res.status(400).send("Invalid password");
         }
-
-        const token = jwt.sign({id: user._id, email: user.email}, process.env.JWT_SECRET);
-
-        res.status(200).send({message: "Logged in successfully",token});
+         
+        //console.log("userModel", UserModel)
+        const token = await user.getJWT();
+        
+        res.cookie("token", token, { expires: new Date(Date.now() + 900000)});
+        res.status(200).send({message: "Logged in successfully"});
     }catch(err){
+        console.log("error", err)
         res.status(500).send({error:"Internal server error"});
     }
 }
