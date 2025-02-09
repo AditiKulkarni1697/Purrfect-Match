@@ -5,17 +5,13 @@ require("dotenv").config();
 
 const authentication = async (req, res, next) => {
 
-    const { authorization } = req.headers;
-    
-    if(!authorization){
+    const {token} = req.cookies;
+     
+    //console.log("cookies", req.cookies)
+    if(!token){
         return res.status(401).send({msg: "Unauthorized"});
     }
 
-    
-    const token = authorization
-
-    
-    
     try{
 
         const isBlacklisted = await BlacklistModel.findOne({token});
@@ -35,7 +31,7 @@ const authentication = async (req, res, next) => {
         const user = await UserModel.findOne({email: decoded.email});
 
         if(!user){
-            console.log("token", authorization);
+            //console.log("token", authorization);
             return res.status(401).send({msg: "Unauthorized"});
         }
         req.user = user;
@@ -43,7 +39,7 @@ const authentication = async (req, res, next) => {
         next();
         
     }catch(err){
-        console.log(err);
+        //console.log(err);
         return res.status(500).send({msg: "Internal Server Error"});
     }
 }

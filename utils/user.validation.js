@@ -1,5 +1,6 @@
+
 const userValidation = async (req,res,next) => {
-    const {name,email,password, species, interestedIn, lookingFor} = req.body;
+    const {name,email,password, species, interestedIn, lookingFor, interests} = req.body;
 
     if(!name || !email || !password || !species || !interestedIn || !lookingFor){
         return res.status(400).send({msg:"Missing required fields"});
@@ -10,7 +11,7 @@ const userValidation = async (req,res,next) => {
     }
 
     const emailRegex = "^[^\s@]+@[^\s@]+\.[^\s@]+$";
-    if(!emailRegex.test(email)){
+    if(!emailRegex.test(email) || email.length > 100){
         return res.status(400).send({msg:"Invalid email"});
     }
 
@@ -30,6 +31,9 @@ const userValidation = async (req,res,next) => {
         return res.status(400).send({msg:"Invalid lookingFor"});
     }
 
+    if(interests && interests.length > 10){
+        return res.status(400).send({msg:"invalid interest count. Count should be upto 10"})
+    }
 
     next();
 }
