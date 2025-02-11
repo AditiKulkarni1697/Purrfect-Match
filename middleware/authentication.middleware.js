@@ -5,11 +5,16 @@ require("dotenv").config();
 
 const authentication = async (req, res, next) => {
 
-    const {token} = req.cookies;
-     
-    //console.log("cookies", req.cookies)
+    let {token} = req.cookies;
+    
+
+    if(!token && req.query.token){
+        token = req.query.token;
+    }
+    
     if(!token){
-        return res.status(401).send({msg: "Unauthorized"});
+        console.log("token", token)
+        return res.status(401).send({msg: "Unauthorized by token"});
     }
 
     try{
@@ -17,29 +22,29 @@ const authentication = async (req, res, next) => {
         const isBlacklisted = await BlacklistModel.findOne({token});
 
         if(isBlacklisted){
-           
-            return res.status(401).send({msg: "Unauthorized"});
+           console.log("blacklisted")
+            return res.status(401).send({msg: "Unauthorized logout"});
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!decoded){
-            
-            return res.status(401).send({msg: "Unauthorized"});
+            console.log("decoded", decoded)
+            return res.status(401).send({msg: "Unauthorized decoded"});
         }
 
         const user = await UserModel.findOne({email: decoded.email});
 
         if(!user){
-            //console.log("token", authorization);
-            return res.status(401).send({msg: "Unauthorized"});
+            console.log("user", user);
+            return res.status(401).send({msg: "Unauthorized user"});
         }
         req.user = user;
         req.token = token;
         next();
         
     }catch(err){
-        //console.log(err);
+        console.log(err);
         return res.status(500).send({msg: "Internal Server Error"});
     }
 }

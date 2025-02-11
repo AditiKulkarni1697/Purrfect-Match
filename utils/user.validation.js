@@ -1,8 +1,8 @@
 
 const userValidation = async (req,res,next) => {
-    const {name,email,password, species, interestedIn, lookingFor, interests} = req.body;
+    const {name,email,password, species, interestedIn, lookingFor, interests, photoUrl} = req.body;
 
-    if(!name || !email || !password || !species || !interestedIn || !lookingFor){
+    if(!name || !email || !password || !species || !interestedIn || !lookingFor || !photoUrl){
         return res.status(400).send({msg:"Missing required fields"});
     }
 
@@ -10,7 +10,7 @@ const userValidation = async (req,res,next) => {
         return res.status(400).send({msg:"Name must be between 3 to 50 characters"});
     }
 
-    const emailRegex = "^[^\s@]+@[^\s@]+\.[^\s@]+$";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email) || email.length > 100){
         return res.status(400).send({msg:"Invalid email"});
     }
@@ -23,7 +23,7 @@ const userValidation = async (req,res,next) => {
         return res.status(400).send({msg:"Invalid species"});
     }
 
-    if(!["Dog", "Cat", "Bird", "Fish", "Reptile", "Other"].includes(interestedIn)){
+    if(!interestedIn.every((species)=> ["Dog", "Cat", "Bird", "Fish", "Reptile", "Other"].includes(species))){
         return res.status(400).send({msg:"Invalid interestedIn"});
     }
 

@@ -1,11 +1,10 @@
 const {UserModel} = require('../databases/models/user.model');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const { BlacklistModel } = require('../databases/models/blacklist.model');
 require('dotenv').config();
 
 const register = async(req, res) => {
-    const {name, email, password, species, interestedIn, lookingFor, interests} = req.body;
+    const {name, email, password, photoUrl, species, interestedIn, lookingFor, interests} = req.body;
 
     const userExists = await UserModel.findOne({email});
 
@@ -19,6 +18,7 @@ const register = async(req, res) => {
             name,
             email,
             password: hashed,
+            photoUrl,
             species,
             interestedIn,
             lookingFor,
@@ -28,6 +28,7 @@ const register = async(req, res) => {
         await user.save();
         res.status(201).send({message:"User registered successfully"});
     }catch(err){
+        console.log(err)
         res.status(500).send({error:"Internal server error"});
     }
 }
@@ -42,7 +43,7 @@ const login = async(req,res)=>{
             return res.status(404).send("User not found");
         }
 
-        const isMatch = user.comparePassword(password)
+        const isMatch = await user.comparePassword(password)
 
         if(!isMatch){
             return res.status(400).send("Invalid password");
@@ -59,17 +60,6 @@ const login = async(req,res)=>{
     }
 }
 
-const getAllUsers = async(req,res)=>{
-
-    try{
-        const user = await UserModel.find();
-        res.status(200).send(user);
-    }
-    catch(err){
-        res.status(500).send({error:"Internal server error"});
-    }
-
-}
 
 const logout = async(req,res)=>{
     const {token} = req;
@@ -83,4 +73,4 @@ const logout = async(req,res)=>{
     }
 }
 
-module.exports = {register, login, getAllUsers, logout};
+module.exports = {register, login, logout};
