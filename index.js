@@ -1,7 +1,10 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
+
 const { connection } = require("./databases/connection");
 const {userRouter} = require("./routes/user.route");
-const cookieParser = require("cookie-parser");
+const { profileRouter } = require("./routes/profile.routes");
+
 require("dotenv").config();
 const app = express();
 
@@ -9,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/user", userRouter);
+app.use("/profile", profileRouter)
 
 app.use("/", (err,req,res,next)=>{
     console.log("error",err);

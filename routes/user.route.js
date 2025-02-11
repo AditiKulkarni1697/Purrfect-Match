@@ -1,4 +1,4 @@
-const {register, login, getAllUsers, logout} = require('../controller/user.controller');
+const {register, login, logout} = require('../controller/user.controller');
 
 const express = require('express');
 const { authentication } = require('../middleware/authentication.middleware');
@@ -10,8 +10,6 @@ userRouter.post('/register',userValidation, register);
 
 userRouter.post('/login', login);
 
-userRouter.get('/',authentication, getAllUsers);
-
-userRouter.post('/logout',authentication, logout);
+userRouter.get('/logout',authentication, logout);
 
 module.exports = {userRouter};
