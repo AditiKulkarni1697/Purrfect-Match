@@ -6,7 +6,7 @@ const { sendMail } = require("../utils/nodeMailer");
 const getAllProfiles = async (req, res) => {
   try {
     const user = await UserModel.find();
-    res.status(200).send(user);
+    res.status(200).send({data:user});
   } catch (err) {
     res.status(500).send({ error: "Internal server error" });
   }
@@ -16,7 +16,7 @@ const getProfile = async (req, res) => {
   const userId = req.params.id;
   try {
     const profile = await UserModel.findById(userId);
-    res.status(200).send({ profile });
+    res.status(200).send({data:profile});
   } catch (err) {
     res.status(500).send({ msg: "Internal Server Error" });
   }

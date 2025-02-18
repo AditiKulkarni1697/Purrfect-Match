@@ -1,6 +1,7 @@
 const {UserModel} = require('../databases/models/user.model');
 const bcrypt = require('bcryptjs');
 const { BlacklistModel } = require('../databases/models/blacklist.model');
+const { ConnectionRequestModel } = require('../databases/models/connectionRequest.model');
 require('dotenv').config();
 
 const register = async(req, res) => {
@@ -73,4 +74,36 @@ const logout = async(req,res)=>{
     }
 }
 
-module.exports = {register, login, logout};
+const getConnections = async(req,res)=>{
+    const userId = req.user._id;
+    try{
+        const allConnections = await ConnectionRequestModel.find({$or:[{senderId:userId}, {receiverId: userId}], status:"accepted"});
+        res.status(200).send({data: allConnections})
+    }catch(err){
+        res.status(500).send({error:"Internal Server Error"})
+    }
+}
+
+const requestReceived = async(req,res)=>{
+    const userId = req.user._id;
+    try{
+        const requests = await ConnectionRequestModel.find({receiverId:userId, status:"interested"});
+        res.status(200).send({data: requests});
+    }catch(err){
+        res.status(500).send({error:"Internal Server Error"})
+    }
+}
+
+const getFeed = async(req,res) =>{
+    const user = req.user;
+    try{
+        const feed = await UserModel.find({interestedIn:{ $in: [ user.species ] }, lookingFor: user.lookingFor});
+
+        
+    }catch(err){
+
+    }
+}
+
+
+module.exports = {register, login, logout, getConnections, requestReceived, getFeed};

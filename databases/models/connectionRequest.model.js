@@ -17,6 +17,8 @@ const connectionRequestSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+connectionRequestSchema.index({senderId:1, receiverId:1});
+
 const ConnectionRequestModel = mongoose.model(
   "connectionrequest",
   connectionRequestSchema

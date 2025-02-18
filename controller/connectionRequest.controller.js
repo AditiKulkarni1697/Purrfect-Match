@@ -1,112 +1,87 @@
-const {ConnectionRequestModel} = require("../databases/models/connectionRequest.model");
+const {
+  ConnectionRequestModel,
+} = require("../databases/models/connectionRequest.model");
 const { UserModel } = require("../databases/models/user.model");
 
-const createConnectionRequest = async(senderId, receiverId, status) =>{
-    try{
-        const isReceiverPresent = await UserModel.findById(receiverId);
+const createConnectionRequest = async (req, res) => {
+  const receiverId = req.params.userId;
+  const senderId = req.user._id;
+  const status = req.params.status;
+  try {
+    const allowedStatus = ["interested", "ignored"];
 
-        if(!isReceiverPresent){
-            return {status:401, msg:"Receiver Not Found"}
-        }
-
-        const isAlreadyRequested = await ConnectionRequestModel.findOne({senderId: senderId, receiverId: receiverId});
-
-        if(isAlreadyRequested){
-            return {status:401, msg:"Connection request already present"};
-        }
-
-        const payload = {senderId, receiverId, status};
-
-        const connectionRequest = new ConnectionRequestModel(payload);
-
-        await connectionRequest.save();
-
-        return {status:200, msg:"Connection request status saved successfully"};
-    }catch(err){
-        console.log("error in createConnectionRequest", err)
-        throw new Error("Internal Server Error")
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).send({ msg: "invalid status type" });
     }
-}
+    const isReceiverPresent = await UserModel.findById(receiverId);
 
-const interestedInProfile = async(req,res)=>{
-    const receiverId = req.params.userId;
-    const senderId = req.user._id;
-    try{
-        try{
-            const request = await createConnectionRequest(senderId, receiverId,"interested");
-            
-            res.status(request.status).send({msg:request.msg});
-        }catch(err){
-            res.status(500).send({msg:"Internal Server Error"});
-        }
-    }catch(err){
-        console.log("error", err);
-        res.status(500).send({msg:"Internal Server Error"})
+    if (!isReceiverPresent) {
+      return res.status(401).send({ msg: "Receiver Not Found" });
     }
-}
 
-const ignoredProfile = async(req,res)=>{
-    const receiverId = req.params.userId;
-    const senderId = req.user._id;
-    try{
-        const request = await createConnectionRequest(senderId, receiverId,"ignored");
-        res.status(request.status).send({msg:request.msg});
-    }catch(err){
-        console.log("error", err);
-        res.status(500).send({msg:"Internal Server Error"});
+    if (receiverId === senderId.toString()) {
+      return res.status(401).send({ msg: "Self Connection not allowed" });
     }
-}
 
-const requestReview = async(req,requestId, status)=>{
-    try{
-        const isRequestPresent = await ConnectionRequestModel.findById(requestId);
+    const isAlreadyRequested = await ConnectionRequestModel.findOne({
+      $or: [
+        { senderId: senderId, receiverId: receiverId },
+        {
+          senderId: receiverId,
+          receiverId: senderId,
+        },
+      ],
+    });
 
-        if(!isRequestPresent){
-            return {status:401, msg:"Request Not Found"}
-        }
-
-        if(isRequestPresent.receiverId.toString() !== req.user._id.toString()){
-            
-            return {status:401, msg:"Unauthorized"}
-        }
-
-        isRequestPresent["status"] = status;
-
-        await isRequestPresent.save();
-
-        return {status:200, msg:"Connection request status updated successfully"}
-
-
-    }catch(err){
-        console.log("error in createConnectionRequest", err)
-        throw new Error("Internal Server Error")
+    if (isAlreadyRequested) {
+      return res
+        .status(401)
+        .send({ msg: "Connection request already present" });
     }
-}
 
-const acceptedRequest = async(req,res)=>{
-    const requestId = req.params.requestId;
-    
-    try{
-        const review = await requestReview(req,requestId, "accepted");
-        res.status(review.status).send({msg:review.msg})
-    }catch(err){
-        console.log("error", err);
-        res.status(500).send({msg:"Internal Server Error"});
+    const payload = { senderId, receiverId, status };
+
+    const connectionRequest = new ConnectionRequestModel(payload);
+
+    await connectionRequest.save();
+
+    res
+      .status(200)
+      .send({ msg: "Connection request status saved successfully" });
+  } catch (err) {
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
+
+const requestReview = async (req, res) => {
+  const requestId = req.params.requestId;
+  const status = req.params.status;
+  try {
+    const allowedStatus = ["accepted", "rejected"];
+
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).send({ msg: "invalid status type" });
     }
-}
+    const isRequestPresent = await ConnectionRequestModel.findOne({
+      _id: requestId,
+      receiverId: req.user._id,
+      status: "interested",
+    });
 
-const rejectedRequest = async(req,res)=>{
-    const requestId = req.params.requestId;
-    
-    try{
-        const review = await requestReview(req,requestId, "rejected");
-        res.status(review.status).send({msg:review.msg})
-    }catch(err){
-        console.log("error", err);
-        res.status(500).send({msg:"Internal Server Error"});
+    if (!isRequestPresent) {
+      return res.status(401).send({ msg: "Request Not Found" });
     }
-}
 
+    isRequestPresent["status"] = status;
 
+    await isRequestPresent.save();
 
-module.exports = {interestedInProfile, ignoredProfile, acceptedRequest, rejectedRequest}
+    res
+      .status(200)
+      .send({ msg: "Connection request status updated successfully" });
+  } catch (err) {
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+};
+
+module.exports = { createConnectionRequest, requestReview };
