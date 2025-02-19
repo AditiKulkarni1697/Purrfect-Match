@@ -74,20 +74,39 @@ const logout = async(req,res)=>{
     }
 }
 
-const getConnections = async(req,res)=>{
+const getConnections = async (req, res) => {
     const userId = req.user._id;
-    try{
-        const allConnections = await ConnectionRequestModel.find({$or:[{senderId:userId}, {receiverId: userId}], status:"accepted"});
-        res.status(200).send({data: allConnections})
-    }catch(err){
-        res.status(500).send({error:"Internal Server Error"})
+    try {
+        const allConnections = await ConnectionRequestModel.find({
+            $or: [{ senderId: userId }, { receiverId: userId }],
+            status: "accepted"
+        })
+        .populate({
+            path: "senderId",
+            select: "name photoUrl species lookingFor interests"
+        })
+        .populate({
+            path: "receiverId",
+            select: "name photoUrl species lookingFor interests"
+        });
+
+        const connections = allConnections.map(connection => 
+            connection.senderId._id.toString() === userId.toString()
+                ? connection.receiverId
+                : connection.senderId
+        );
+
+        res.status(200).send({ data: connections });
+    } catch (err) {
+        res.status(500).send({ error: "Internal Server Error" });
     }
-}
+};
+
 
 const requestReceived = async(req,res)=>{
     const userId = req.user._id;
     try{
-        const requests = await ConnectionRequestModel.find({receiverId:userId, status:"interested"});
+        const requests = await ConnectionRequestModel.find({receiverId:userId, status:"interested"}).populate("senderId", ["name", "photoUrl", "species", "lookingFor", "interests"]);
         res.status(200).send({data: requests});
     }catch(err){
         res.status(500).send({error:"Internal Server Error"})
