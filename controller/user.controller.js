@@ -52,13 +52,13 @@ const login = async (req, res) => {
     const user = await UserModel.findOne({ email });
 
     if (!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).send({ message:"User not found"});
     }
 
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
-      return res.status(400).send("Invalid password");
+      return res.status(400).send({ message:"Invalid password"});
     }
 
     //console.log("userModel", UserModel)
