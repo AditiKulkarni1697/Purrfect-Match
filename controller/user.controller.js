@@ -78,6 +78,10 @@ const logout = async (req, res) => {
   try {
     const blacklisted = new BlacklistModel({ token });
     await blacklisted.save();
+    res.cookie('token', '', { 
+      httpOnly: true, 
+      expires: new Date(0) // Expire the cookie immediately
+  });
     res.status(200).send({ message: "Logged out successfully" });
   } catch (err) {
     res.status(500).send({ error: "Internal server error" });

@@ -20,6 +20,7 @@ app.use("/user/login", login);
 app.use("/user/logout", logout);
 
 jest.mock("../databases/models/user.model.js");
+jest.mock("../databases/models/blacklist.model.js");
 jest.mock("bcryptjs");
 jest.mock("jsonwebtoken");
 
@@ -41,8 +42,7 @@ describe("User Routes", () => {
         });
 
       expect(res.status).toBe(201);
-      expect(res.body).toHaveProperty("message");
-      expect(res.body.message).toBe("User registered successfully");
+      expect(res.body).toHaveProperty("message", "User registered successfully");
     });
   });
 
@@ -61,6 +61,15 @@ describe("User Routes", () => {
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('message', 'Logged in successfully');
       
+    });
+  });
+
+  describe("GET /user/logout", () => {
+    it("should return 200", async () => {
+      const res = await request(app).get("/user/logout");
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty("message", "Logged out successfully");
     });
   });
 });
