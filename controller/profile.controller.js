@@ -33,7 +33,7 @@ const updateProfile = async (req, res) => {
 
     user.save();
 
-    res.status(200).send({ msg: "Profile is updated" });
+    res.status(200).send({ msg: "Profile is updated", user});
   } catch (err) {
     res.status(500).send({ msg: "Internal Server Error" });
   }

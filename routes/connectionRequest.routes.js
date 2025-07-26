@@ -4,8 +4,8 @@ const { authentication } = require("../middleware/authentication.middleware");
 
 const connectionRequestRouter = express.Router();
 
-connectionRequestRouter.post("/send/:status/:userId",authentication, createConnectionRequest);
+connectionRequestRouter.get("/send/:status/:userId",authentication, createConnectionRequest);
 
-connectionRequestRouter.post("/review/:status/:requestId",authentication, requestReview);
+connectionRequestRouter.get("/review/:status/:requestId",authentication, requestReview);
 
 module.exports = {connectionRequestRouter}

@@ -10,6 +10,8 @@ profileRouter.get('/',authentication, getAllProfiles);
 
 profileRouter.get("/:id", authentication, getProfile);
 
+
+
 profileRouter.patch("/updatepassword", authentication, updatePassword);
 
 profileRouter.patch("/:id", authentication, authorization, profileUpdateValidation, updateProfile);

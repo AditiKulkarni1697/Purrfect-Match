@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        minLength: 4,
+        minLength: 3,
         maxLength: 50
     },
     email: {
@@ -43,17 +43,17 @@ const userSchema = new mongoose.Schema({
     species: {
         type: String,
         enum: ['Dog', 'Cat', 'Bird', 'Fish', 'Reptile', 'Other'],
-        required: true
+        
     },
     interestedIn: {
         type: [String],
         enum: ['Dog', 'Cat', 'Bird', 'Fish', 'Reptile', 'Other'],
-        required: true
+        
     },
     lookingFor: {
         type: String,
         enum: ['Long Term', 'Short Term', 'Pen Pal'],
-        required: true
+        
     },
     interests: {
         type: [String]

@@ -7,13 +7,8 @@ const authentication = async (req, res, next) => {
 
     let {token} = req.cookies;
     
-
-    if(!token && req.query.token){
-        token = req.query.token;
-    }
-    
     if(!token){
-        console.log("token", token)
+        
         return res.status(401).send({msg: "Unauthorized by token"});
     }
 
