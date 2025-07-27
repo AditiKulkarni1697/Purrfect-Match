@@ -31,7 +31,7 @@ const updateProfile = async (req, res) => {
       user[field] = payload[field];
     });
 
-    user.save();
+    await user.save();
 
     res.status(200).send({ msg: "Profile is updated", user});
   } catch (err) {
