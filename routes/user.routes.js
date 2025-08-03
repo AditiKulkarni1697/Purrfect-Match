@@ -1,4 +1,4 @@
-const {register, login, logout, getConnections, requestReceived, getFeed, loggedinUser} = require('../controller/user.controller');
+const {register, login, logout, getConnections, requestReceived, getFeed, loggedinUser, isPremium} = require('../controller/user.controller');
 
 const express = require('express');
 const { authentication } = require('../middleware/authentication.middleware');
@@ -11,6 +11,8 @@ userRouter.post('/register',userValidation, register);
 userRouter.post('/login', login);
 
 userRouter.get("/loggedinUser", loggedinUser)
+
+userRouter.get("/isPremium", authentication, isPremium)
 
 userRouter.get("/connections", authentication, getConnections);
 

@@ -48,24 +48,18 @@ const verifyPaymentWebhook = async (req,res) =>{
 
 try{
   const webhookSignature = req.get("X-Razorpay-Signature")
-  console.log("webhookSignature", webhookSignature)
+  
   const isWebhookValid = validateWebhookSignature(
     JSON.stringify(req.body),
     webhookSignature,
     process.env.RAZORPAY_WEBHOOK_SECRET
   )
-  console.log("isWebhookValid", isWebhookValid)
+  
   const paymentDetails = req?.body?.payload?.payment?.entity;
 
  if(!isWebhookValid){
   return res.status(400).send({msg:"Webhook signature is invalid"})
  }
-  // const paymentDetails = req?.body?.payload?.payment?.entity;
- 
-// var { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
-//  const verified = validatePaymentVerification({"order_id": paymentDetails.order_id, "payment_id": paymentDetails.id }, webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
-
-//  console.log("verified payment", verified)
 
  const payment = await PaymentModel.findOne({orderId: paymentDetails?.order_id})
 
@@ -73,7 +67,7 @@ try{
  payment.paymentId = paymentDetails?.id
 
  await payment.save()
- console.log("payment saved")
+ 
 
  const user = await UserModel.findById({_id:payment.userId})
 
@@ -81,7 +75,6 @@ try{
  user.membershipType = payment.notes.membershipType
 
  await user.save()
- console.log("user saved")
 
  res.status(200).send({msg:"Webhook received successfully"})
 }catch(err){
@@ -90,5 +83,7 @@ try{
 }
  
 }
+
+
 
 module.exports = { createOrder, verifyPaymentWebhook };

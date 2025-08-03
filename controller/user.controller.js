@@ -121,6 +121,20 @@ const logout = async (req, res) => {
   }
 };
 
+const isPremium = async (req,res) => {
+  const user = req.user
+
+  try{
+  if(user.isPremium){
+    return res.status(200).send({status:true})
+  }
+
+  return res.status(200).send({status:false})
+}catch(err){
+  res.status(500).send({err:err.message})
+}
+}
+
 const getConnections = async (req, res) => {
   const userId = req.user._id;
   try {
@@ -211,4 +225,5 @@ module.exports = {
   getConnections,
   requestReceived,
   getFeed,
+  isPremium
 };
