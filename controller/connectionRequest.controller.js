@@ -2,6 +2,7 @@ const {
   ConnectionRequestModel,
 } = require("../databases/models/connectionRequest.model");
 const { UserModel } = require("../databases/models/user.model");
+const { run } = require("../utils/sendEmail");
 
 const createConnectionRequest = async (req, res) => {
   const receiverId = req.params.userId;
@@ -45,11 +46,18 @@ const createConnectionRequest = async (req, res) => {
 
     await connectionRequest.save();
 
+   
+      const emailSent = await run("sujlegaonkar16@gmail.com", "aditisujlegaonkar@gmail.com", "<h1>This is Html body</h1>", "This is Text content", "New AWS SES mail")
+      console.log("emailSent", emailSent)
+    
+
     res
       .status(200)
       .send({ msg: "Connection request status saved successfully" });
   } catch (err) {
+    console.log("error", err.message)
     res.status(500).send({ msg: "Internal Server Error" });
+    
   }
 };
 

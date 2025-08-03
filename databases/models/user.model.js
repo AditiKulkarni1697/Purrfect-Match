@@ -58,6 +58,13 @@ const userSchema = new mongoose.Schema({
     interests: {
         type: [String]
     },
+    isPremium: {
+        type:Boolean,
+        default:false
+    },
+    membershipType: {
+        type: String
+    }
 }, {timestamps: true});
 
 userSchema.methods.getJWT = async function () {

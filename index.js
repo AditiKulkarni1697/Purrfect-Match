@@ -5,8 +5,10 @@ const { connection } = require("./databases/connection");
 const {userRouter} = require("./routes/user.routes");
 const { profileRouter } = require("./routes/profile.routes");
 const { connectionRequestRouter } = require("./routes/connectionRequest.routes");
+const { paymentRouter } = require("./routes/payment.routes");
 
 require("dotenv").config();
+require("./utils/cronJobs")
 const app = express();
 
 app.use(cors({
@@ -19,6 +21,7 @@ app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
 app.use("/request", connectionRequestRouter);
+app.use("/payment", paymentRouter)
 
 app.use("/", (err,req,res,next)=>{
     console.log("error",err);
