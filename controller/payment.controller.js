@@ -54,17 +54,18 @@ try{
     webhookSignature,
     process.env.RAZORPAY_WEBHOOK_SECRET
   )
-  
+  console.log("isWebhookValid", isWebhookValid)
+  const paymentDetails = req?.body;
+
  if(!isWebhookValid){
   return res.status(400).send({msg:"Webhook signature is invalid"})
  }
- console.log("isWebhookValid", isWebhookValid)
-
-
+  // const paymentDetails = req?.body?.payload?.payment?.entity;
+ 
 // var { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
-// validatePaymentVerification({"order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
+ const verified = validatePaymentVerification({"order_id": paymentDetails.order_id, "payment_id": paymentDetails.id }, webhookSignature, process.env.RAZORPAY_WEBHOOK_SECRET);
 
- const paymentDetails = req.body.payload.payment.entity;
+ console.log("verified payment", verified)
 
  const payment = await PaymentModel.findOne({orderId: paymentDetails.order_id})
 
