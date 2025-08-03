@@ -58,6 +58,11 @@ try{
  if(!isWebhookValid){
   return res.status(400).send({msg:"Webhook signature is invalid"})
  }
+ console.log("isWebhookValid", isWebhookValid)
+
+
+// var { validatePaymentVerification, validateWebhookSignature } = require('./dist/utils/razorpay-utils');
+// validatePaymentVerification({"order_id": razorpayOrderId, "payment_id": razorpayPaymentId }, signature, secret);
 
  const paymentDetails = req.body.payload.payment.entity;
 
