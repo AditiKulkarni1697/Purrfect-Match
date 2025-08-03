@@ -55,7 +55,7 @@ try{
     process.env.RAZORPAY_WEBHOOK_SECRET
   )
   console.log("isWebhookValid", isWebhookValid)
-  const paymentDetails = req?.body;
+  const paymentDetails = req?.body?.payload?.payment?.entity;
 
  if(!isWebhookValid){
   return res.status(400).send({msg:"Webhook signature is invalid"})
@@ -67,10 +67,10 @@ try{
 
 //  console.log("verified payment", verified)
 
- const payment = await PaymentModel.findOne({orderId: paymentDetails.order_id})
+ const payment = await PaymentModel.findOne({orderId: paymentDetails?.order_id})
 
- payment.status = paymentDetails.status
- payment.paymentId = paymentDetails.id
+ payment.status = paymentDetails?.status
+ payment.paymentId = paymentDetails?.id
 
  await payment.save()
  console.log("payment saved")
