@@ -48,7 +48,7 @@ const createConnectionRequest = async (req, res) => {
 
    
       const emailSent = await run("sujlegaonkar16@gmail.com", "aditisujlegaonkar@gmail.com", "<h1>This is Html body</h1>", "This is Text content", "New AWS SES mail")
-      console.log("emailSent", emailSent)
+      
     
 
     res

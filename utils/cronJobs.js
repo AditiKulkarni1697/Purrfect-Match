@@ -12,16 +12,16 @@ cron.schedule("0 8 * * *",async()=>{
 
     const yesterdayRequests = await ConnectionRequestModel.find({createdAt:{$gte: startOfYesterday,$lt: endOfYesterday}}).populate("receiverId")
 
-    //console.log("yesterdayRequests", yesterdayRequests)
+    
 
     const listOfUniqueEmails = [...new Set(yesterdayRequests.map((request)=>request.receiverId.email))]
 
-    //console.log("listOfUniqueEmails",listOfUniqueEmails)
+   
     const HTMLBody = `<h1>You have a friend request</h1>`
     const textBody = 'You have friend request, please check'
     for(let i=0;i<listOfUniqueEmails.length;i++){
        const emailSend = await run("sujlegaonkar16@gmail.com", "aditisujlegaonkar@gmail.com", HTMLBody, textBody, "Friend Request Received")
-       //console.log("emailSend", emailSend)
+       
     }
 
 }catch(err){

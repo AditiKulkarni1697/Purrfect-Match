@@ -18,7 +18,7 @@ const createOrder = async (req, res) => {
       }
     };
     const order = await instance.orders.create(options);
-    console.log("order", order)
+    
     const {id, amount,
   currency,
   receipt,

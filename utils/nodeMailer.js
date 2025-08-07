@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendMail = async(email,url)=>{
-    console.log("email", email)
+    
     const info = await transporter.sendMail({
         from: `${process.env.GMAIL_ID}`, // sender address
         to: `${email}`, // list of receivers

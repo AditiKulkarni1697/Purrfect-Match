@@ -4,44 +4,58 @@ const { BlacklistModel } = require('../databases/models/blacklist.model');
 require("dotenv").config();
 
 const authentication = async (req, res, next) => {
-
-    let {token} = req.cookies;
-    
-    if(!token){
-        
-        return res.status(401).send({msg: "Unauthorized by token"});
-    }
-
     try{
+    let {token} = req.cookies;
 
+        const user = await verifyUser(token)
+        if(user.user){
+            req.user = user.user;
+        req.token = token;
+        next();
+        }else{
+            console.log("error in auth", user.msg)
+            return res.status(401).send({msg: user.msg});
+        }
+        
+        
+    }catch(err){
+        console.log(err);
+        return res.status(500).send({msg: err});
+    }
+}
+
+const verifyUser = async (token) =>{
+    try{
+        if(!token){
+        
+        return {msg: "Unauthorized by token"};
+    }
         const isBlacklisted = await BlacklistModel.findOne({token});
 
         if(isBlacklisted){
-           console.log("blacklisted")
-            return res.status(401).send({msg: "Unauthorized logout"});
+           
+            return {msg: "Unauthorized logout"};
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         if(!decoded){
-            console.log("decoded", decoded)
-            return res.status(401).send({msg: "Unauthorized decoded"});
+           
+            return {msg: "Unauthorized decoded"};
         }
 
         const user = await UserModel.findOne({email: decoded.email});
 
         if(!user){
-            console.log("user", user);
-            return res.status(401).send({msg: "Unauthorized user"});
+            
+            return {msg: "Unauthorized user"};
         }
-        req.user = user;
-        req.token = token;
-        next();
-        
+
+        return {user}
+
     }catch(err){
-        console.log(err);
-        return res.status(500).send({msg: "Internal Server Error"});
+        return {err:err.message}
     }
 }
 
-module.exports = {authentication};
+module.exports = {authentication, verifyUser};

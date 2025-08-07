@@ -53,7 +53,7 @@ const run = async (senderEmail, receiverEmail, HTMLBody, TextBody, emailSubject)
       const messageRejectedError = caught;
       return messageRejectedError;
     }
-    console.log("caught", caught)
+    
     throw caught;
   }
 };

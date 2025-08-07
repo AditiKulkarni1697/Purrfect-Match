@@ -64,7 +64,7 @@ const login = async (req, res) => {
       return res.status(400).send({ message: "Invalid password" });
     }
 
-    //console.log("userModel", UserModel)
+    
     const token = await user.getJWT();
 
     res.cookie("token", token, {
@@ -89,7 +89,7 @@ const loggedinUser = async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded) {
-      console.log("decoded", decoded);
+     
       return res.status(401).send({ msg: "Unauthorized" });
     }
 
@@ -107,7 +107,7 @@ const loggedinUser = async (req, res) => {
 
 const logout = async (req, res) => {
   const { token } = req;
-  console.log("token in logout", token);
+  
   try {
     const blacklisted = new BlacklistModel({ token });
     await blacklisted.save();
