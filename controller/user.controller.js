@@ -44,7 +44,7 @@ const register = async (req, res) => {
     res.status(201).send({ message: "User registered successfully" });
   } catch (err) {
     console.log(err);
-    res.status(500).send({ error: "Internal server error" });
+    res.status(500).send({ error: "Internal Server Error" });
   }
 };
 
@@ -71,7 +71,7 @@ const login = async (req, res) => {
       httpOnly: true,
       secure: false, // true in production with HTTPS
       sameSite: "Lax", // or "None" if cross-site
-      expires: new Date(Date.now() + 1800000), //30 mins
+      expires: new Date(Date.now() + 7200000 ), //120 mins
     });
     res.status(200).send({ user });
   } catch (err) {
