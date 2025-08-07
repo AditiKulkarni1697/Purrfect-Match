@@ -10,14 +10,15 @@
 * 🔍 **Search for Pet Friends** – Browse and find pets by name or type.
 * 🤝 **Friend Requests** – Send, accept, or decline requests to connect with other pets.
 * 📇 **Connections Page** – View all accepted friends in a neat, organized interface.
+*    **Chat with Connections** - Chat with your connections in real time.
 * 🐕 **Pet Profiles** – Basic profile management for each pet (e.g., name, breed, bio).
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Frontend:** React.js, Tailwind CSS (optional)
-* **Backend:** Node.js, Express.js
+* **Frontend:** React.js, Tailwind CSS (optional), socket.io/client
+* **Backend:** Node.js, Express.js, socket.io
 * **Database:** MongoDB (Atlas or self-hosted)
 * **Authentication:** JWT-based Auth
 * **Deployment:**
@@ -45,6 +46,9 @@ logged in User can accpet/decline friend request:
 
 Logged in user can view connections:
 ![alt text](image-4.png)
+
+Logged in user can chat with connections in real time:
+![alt text](purrfectmatc_sc_4-1.jpg)
 
 Logged in user can subscribe to premium:
 ![alt text](image-5.png)
