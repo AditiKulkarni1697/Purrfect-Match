@@ -36,25 +36,25 @@
 
 
 Profile of logged in user:
-![alt text](image.png)
+![alt text](media\image.png)
 
 logged in User can update his/her profile:
-![alt text](image-1.png)
+![alt text](media\image-1.png)
 
 logged in User can browse through feed and send friend request or ignore the card:
-![alt text](image-2.png)
+![alt text](media\image-2.png)
 
 logged in User can accpet/decline friend request:
-![alt text](image-3.png)
+![alt text](media\image-3.png)
 
 Logged in user can view connections:
-![alt text](image-4.png)
+![alt text](media\image-4.png)
 
 Logged in user can chat with connections in real time:
-![alt text](purrfectmatc_sc_4-1.jpg)
+![alt text](media\purrfectmatc_sc_4-1.jpg)
 
 Logged in user can subscribe to premium:
-![alt text](image-5.png)
+![alt text](media\image-5.png)
 ---
 
 ---
